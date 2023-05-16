@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 20:45:50 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/05/13 00:53:01 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/16 23:56:44 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,52 +29,98 @@ void ft_initialize_tab(t_pipex *tab)
 int ft_check_path(t_pipex *tab, char *argv, char *envp[])
 {
     int i;
-    char *modified_args;
-    /*char **splitted_args;*/
     char delimiter;
-
+    char *path;
 
     i = 0;
-
-    while (ft_strncmp(envp[i], "PATH=", 5) != 0)
+    path = NULL;
+    if(envp)
+    {
+        while(envp[i])
+        {
+            if  (ft_strncmp(envp[i], "PATH=", 5) == 0)
+            {
+                path = ft_substr(envp[i], 5, ft_strlen(envp[i]) - 5);
+                break;
+            } 
         i++;
-    tab->path_from_envp = ft_substr(envp[i], 5, ft_strlen(envp[i]) - 5);
-    tab->paths = ft_split(tab->path_from_envp, ':');
-    modified_args = ft_strjoin(argv, " ");
-    /*printf("The args string: %s\n", modified_args);*/
+        }
+    }
+    if (path)
+    {
+        tab->path_from_envp = path;
+        tab->paths = ft_split(tab->path_from_envp, ':');
+        if(!tab->paths)
+            exit(error_msg(NULL, "bash", MKO, clean_exit(tab, 1)));
+    }
+    else
+    { 
+        tab->paths = ft_split(DEFPATH, ':');
+        if (!tab->paths)
+            exit (error_msg(NULL, "bash", MKO, clean_exit(tab, 1)));
+    }
     delimiter = findFirstDelimiter(argv, "\'\"");
-    /*printf("Delimiter found: %c\n", delimiter);*/
+    i = 0;
+    int b;
+    b = 0;
+    while (argv[i] != '\0')
+    {
+        if (argv[i] == '\"')
+            b++;
+        i++;
+    }
+    if (b % 2 != 0)
+    {
+        delimiter = '\0';
+        argv = removing_char(argv, '\\');
+    }
+    else 
+    {
+        b = 0;
+        while (argv[b++] != '\0')
+        {
+            if (argv[b] == '\\' && argv[b + 1] == '\"')
+                argv[b + 1] = '\'';
+        }
+    }
+    b = 0;
     if (delimiter != '\0')
     {
         tab->cmd_args = ft_split(argv, delimiter);
+        while (tab->cmd_args[1][b++] != '\0')
+        {
+            if (tab->cmd_args[1][b] == '\\' && tab->cmd_args[1][b + 1] == '\'')
+            {
+               tab->cmd_args[1][b + 1] = '\"';
+            }
+        }
+        tab->cmd_args[1] = removing_char(tab->cmd_args[1], '\\');
         tab->cmd_args[0] = removing_char(tab->cmd_args[0], ' ');
     }
     else 
         tab->cmd_args = ft_split(argv, ' ');
-    /*i = 0;
-    while (tab->cmd_args[i] != NULL)
-    {
-        printf("%s\n", tab->cmd_args[i]);
-        i++;
-    }
-    return (1);*/
-
     i = 0;
+    if (tab->cmd_args[0][0] == '/' || tab->cmd_args[0][0] == '.' || ft_strrchr(tab->cmd_args[0], '/') != NULL)
+    {
+        tab->cmd = ft_strdup(tab->cmd_args[0]);
+        if (access(tab->cmd, X_OK) != 0)
+            exit(error_msg(PPX, tab->cmd_args[0], CNF, 126));
+        return(0);
+    }
     while (tab->paths[i])
     {
         tab->cmd_paths = ft_strjoin(tab->paths[i], "/");
         tab->cmd = ft_strjoin(tab->cmd_paths, tab->cmd_args[0]);
-        /*printf("tab->cmd: %s\n", tab->cmd);
-        printf("tab->cmd_args[0]: %s\n", tab->cmd_args[0]);*/
         if (access(tab->cmd, X_OK) == 0)
             return(0);
         free(tab->cmd);
         i++;
     }
-    exit(EXIT_FAILURE);
+    exit(error_msg(PPX, tab->cmd_args[0], CNF, 127));
 }
 
-int parsing_here_doc()
+
+int parsing_here_doc(t_pipex *tab)
 {
     char *line;
     int pipe_fd[2];
@@ -85,8 +131,8 @@ int parsing_here_doc()
     line = NULL;
     delimiter = "EOF";
 
-    if (pipe(pipe_fd) == -1)
-        exit(EXIT_FAILURE);
+    if (pipe(pipe_fd) < 0)
+        exit (error_msg(NULL, "bash", ECP, clean_exit(tab, 1)));
     while ((line = get_next_line(0)) != NULL)
     {
         if (ft_strncmp(line, delimiter, ft_strlen(line)) == 0)
@@ -100,7 +146,8 @@ int parsing_here_doc()
         ft_putchar_fd('\n', pipe_fd[1]);
         free(line);
     }
-    close(pipe_fd[1]);
+    if (close(pipe_fd[1]))
+        exit (error_msg(PPX, "open", CNC, clean_exit(tab, 1)));
     return (pipe_fd[0]);
 }
 
@@ -123,55 +170,17 @@ char *removing_char(char *cmd, char delimiter)
     return(s2);
 }
 
-char **string_check(char **cmd, int num_strings)
+int	error_msg(char *first, char *second, char *thrd, int ret)
 {
-    char *new_cmd;
-    int i, j = 0;
+	size_t	len;
 
-    while (j < num_strings) 
-    {
-        new_cmd = NULL;
-        i = 0;
-
-        while (cmd[j][i] != '\0') {
-            if (cmd[j][i] == 39 || cmd[j][i] == 34)
-                break;
-            i++;
-        }
-
-        if (cmd[j][i] != '\0') // Quotes found
-        {
-            if (ft_strchr(cmd[j], '\"') != NULL && ft_strchr(cmd[j], '\'') != NULL)
-            {
-                if (cmd[j][i] == '\"')
-                {
-                    new_cmd = removing_char(cmd[j], '\"');
-                    free(cmd[j]);
-                    cmd[j] = new_cmd;
-                }
-                else if (cmd[j][i] == '\'')
-                {
-                    new_cmd = removing_char(cmd[j], '\'');
-                    free(cmd[j]);
-                    cmd[j] = new_cmd;
-                }
-            }
-            else if ((ft_strchr(cmd[j], '\"') != NULL) && (ft_strchr(cmd[j], '\'') == NULL))
-            {
-                new_cmd = removing_char(cmd[j], '\"');
-                free(cmd[j]);
-                cmd[j] = new_cmd;
-            }
-            else if ((ft_strchr(cmd[j], '\"') == NULL) && (ft_strchr(cmd[j], '\'') != NULL))
-            {
-                new_cmd = removing_char(cmd[j], '\'');
-                free(cmd[j]);
-                cmd[j] = new_cmd;
-            }
-        }
-        j++;
-    }
-    return cmd;
+	if (!first)
+		len = 0;
+	else
+		len = ft_strlen(first);
+	write(2, first, len);
+	write(2, second, ft_strlen(second));
+	write(2, thrd, ft_strlen(thrd));
+	write(2, "\n", 1);
+	return (ret);
 }
-
-
