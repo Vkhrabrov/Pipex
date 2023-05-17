@@ -6,7 +6,7 @@
 #    By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/04 21:21:32 by vkhrabro          #+#    #+#              #
-#    Updated: 2023/05/10 23:41:31 by vkhrabro         ###   ########.fr        #
+#    Updated: 2023/05/17 21:10:52 by vkhrabro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = pipex
 HEADER = pipex.h
 LIBS:= libft/
 
-SRC_F:= pipex pipex_utils pipex_utils_2 get_next_line/get_next_line 
+SRC_F:= pipex pipex_utils pipex_utils_2 pipex_utils_3 get_next_line/get_next_line 
 
 #SRC_BNS_F:= ft_lstnew ft_lstadd_front ft_lstsize ft_lstlast ft_lstadd_back ft_lstdelone ft_lstclear ft_lstiter ft_lstmap
 

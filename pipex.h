@@ -6,12 +6,12 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 21:33:43 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/05/16 23:45:07 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/17 22:42:01 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
-#define PIPEX_H
+# define PIPEX_H
 
 # include "libft/libft.h"
 
@@ -36,32 +36,40 @@
 # include <stdio.h>
 
 /*boolean*/
-#include <stdbool.h>
-
+# include <stdbool.h>
 
 typedef struct s_pipex
 {
-    int in_fd;
-    int out_fd;
-    int here_doc;
-    int invalid_infile;
-    char    *path_from_envp;
-    char    **paths;
-    char    *cmd_paths;
-    char    **cmd_args;
-    char    *cmd;
-    int     cmd_count;
-} t_pipex;
+	int		in_fd;
+	int		out_fd;
+	int		here_doc;
+	int		invalid_infile;
+	int		i;
+	int		b;
+	char	delimiter;
+	char	*delimiter_heredoc;
+	char	*path_from_envp;
+	char	**paths;
+	char	*cmd_paths;
+	char	*path;
+	char	**cmd_args;
+	char	*cmd;
+	int		cmd_count;
+}	t_pipex;
 
-void        ft_initialize_tab(t_pipex *tab);
-int         parsing_here_doc();
-int         ft_check_path(t_pipex *tab, char *argv, char *envp[]);
-char	    *get_next_line(int fd);
-char        **string_check(char **cmd, int num_strings);
-char        findFirstDelimiter(const char *str, const char *delimiters);
-char        *removing_char(char *cmd, char delimiter);
-int         error_msg(char *first, char *second, char *thrd, int ret);
-int	        clean_exit(t_pipex *tab, int ret);
+void	ft_initialize_tab(t_pipex *tab);
+int		parsing_here_doc(t_pipex *tab);
+void	check_path(t_pipex *tab, char *argv, char *envp[]);
+char	*get_next_line(int fd);
+char	**string_check(char **cmd, int num_strings);
+char	find_first_delimiter(const char *str, const char *delimiters);
+char	*removing_char(char *cmd, char delimiter);
+int		error_msg(char *first, char *second, char *thrd, int ret);
+int		clean_exit(t_pipex *tab, int ret);
+void	string_parsing_back_slashes(t_pipex *tab, char *argv);
+void	string_parsing_quotes(t_pipex *tab, char *argv);
+int		string_parsing_final(t_pipex *tab);
+void	check_path_part_2(t_pipex *tab, char *argv);
 
 # define BSH "bash: "
 # define PPX "pipex: "
