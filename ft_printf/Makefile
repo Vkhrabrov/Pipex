@@ -6,7 +6,7 @@
 #    By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/23 21:09:07 by vkhrabro          #+#    #+#              #
-#    Updated: 2023/04/03 19:18:32 by vkhrabro         ###   ########.fr        #
+#    Updated: 2023/05/22 23:49:59 by vkhrabro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ SRC_B:= ft_eval_format_bonus ft_calculate_padding_right_int_bonus \
 ft_calculate_padding_left_int_bonus ft_calculate_padding_x_bonus ft_printf_int_support_bonus \
 ft_printf_str_support_bonus ft_printf_unsigned_int_support_bonus
 
-LIBS:= libft/libft.a
+LIBS:= ../libft/libft.a
 
 FLAGS = -Wall -Wextra -Werror -MMD
 RM = rm -f
@@ -42,26 +42,26 @@ CC = gcc
 %.o: %.c $(HEADER)
 	$(CC) $(FLAGS) -I $(HEADER) -c $< -o $@
 
-all: 	make_libs $(NAME)
+all: $(NAME)
 
-bonus: 	make_libs bbonus
+bonus: bbonus
 
-make_libs:
-		$(MAKE) -C libft/ 
+$(LIBS):
+		$(MAKE) -C ../libft/ 
 
 $(NAME): $(OBJS) $(HEADER) $(LIBS)
-		cp libft/libft.a $(NAME)
-		ar -rcs $(NAME) $(OBJS) 
+		cp $(LIBS) $(NAME)
+		ar -rcs $(NAME) $(OBJS)
 
 bbonus:  $(OBJS) $(OBJS_BNS) $(HEADER) $(LIBS)
-		cp libft/libft.a $(NAME)
+		cp $(LIBS) $(NAME)
 		ar -rcs $(NAME) $(OBJS) $(OBJS_BNS) 
 		@touch bbonus
 
 clean:
 	$(RM) $(OBJS) $(OBJS_BNS) $(DEPS)
-	$(RM) libft/libft.a
-	$(MAKE) -C libft/ clean  
+	$(RM) $(LIBS)
+	$(MAKE) -C ../libft/ clean  
 
 fclean: clean
 	$(RM) $(NAME) 
@@ -71,3 +71,4 @@ re: fclean all
 .PHONY: re clean fclean all
 
 -include $(DEPS) $(DEPS_BNS)
+

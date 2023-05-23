@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_calculate_padding_left_int.c                    :+:      :+:    :+:   */
+/*   ft_calculate_padding_left_int_bonus.c              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 23:59:35 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/04/02 20:54:32 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/22 23:38:05 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include "ft_printf.h"
 #include <stdlib.h>
-#include "libft/libft.h"
+#include "../libft/libft.h"
 
 void	calculate_left_padding(t_print *tab, char *a, int len, int *pad)
 {

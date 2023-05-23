@@ -6,12 +6,12 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 22:27:37 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/04/02 01:25:15 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/22 23:37:47 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include<unistd.h>
-#include "libft/libft.h"
+#include "../libft/libft.h"
 #include "ft_printf.h"
 #include <stdarg.h>
 #include <stdio.h>

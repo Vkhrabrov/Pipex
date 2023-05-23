@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/03 22:54:59 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/05/17 23:04:27 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/23 23:52:58 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,9 +87,8 @@ int	main(int argc, char **argv, char *envp[])
 	tab = (t_pipex *)malloc(sizeof(t_pipex));
 	if (!tab)
 		exit (EXIT_FAILURE);
-	ft_initialize_tab(tab);
+	initialize_tab(tab);
 	ft_check_args(argc, argv, tab);
 	pipex(tab, argv, envp);
-	clean_exit(tab, 0);
-	return (0);
+	return (clean_exit(tab, 0));
 }

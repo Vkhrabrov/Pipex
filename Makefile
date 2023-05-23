@@ -6,24 +6,26 @@
 #    By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/04 21:21:32 by vkhrabro          #+#    #+#              #
-#    Updated: 2023/05/17 21:10:52 by vkhrabro         ###   ########.fr        #
+#    Updated: 2023/05/23 22:51:59 by vkhrabro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = pipex
 HEADER = pipex.h
-LIBS:= libft/
+HEADER_B = pipex_bonus.h
+LIBS = libft/
+PRINTF = ft_printf/
 
-SRC_F:= pipex pipex_utils pipex_utils_2 pipex_utils_3 get_next_line/get_next_line 
+SRC_F:= pipex pipex_utils pipex_utils_2 pipex_utils_3 get_next_line/get_next_line  get_next_line/get_next_line_utils
 
-#SRC_BNS_F:= ft_lstnew ft_lstadd_front ft_lstsize ft_lstlast ft_lstadd_back ft_lstdelone ft_lstclear ft_lstiter ft_lstmap
+SRC_BNS_F:= pipex_bonus pipex_utils_bonus pipex_utils_2_bonus pipex_utils_3_bonus get_next_line/get_next_line get_next_line/get_next_line_utils
 
 FLAGS = -Wall -Wextra -Werror
 RM = rm -f
 SRC = $(addsuffix .c, $(SRC_F))
 OBJS = $(SRC:.c=.o)
-#SRC_BNS = $(addsuffix .c, $(SRC_BNS_F))
-#OBJS_BNS = $(SRC_BNS:.c=.o)
+SRC_BNS = $(addsuffix .c, $(SRC_BNS_F))
+OBJS_BNS = $(SRC_BNS:.c=.o)
 
 CC = gcc
 
@@ -33,24 +35,26 @@ CC = gcc
 all: 	make_libs $(NAME)
 
 make_libs:
-		$(MAKE) -C $(LIBS)
+	$(MAKE) -C ft_printf/
 
-$(NAME): $(OBJS) $(HEADER) $(LIBS)
-	cp libft/libft.a $(NAME)
-	$(CC) $(FLAGS) -L$(LIBS) -lft -o $@ $(OBJS)
+$(NAME): $(OBJS) $(HEADER)
+	$(CC) $(FLAGS) -L$(LIBS) -L$(PRINTF) -lft -lftprintf -o $@ $(OBJS)
 
-#bonus: $(OBJS) $(OBJS_BNS) $(HEADER)
-#		 ar -rcs $(NAME) $(OBJS) $(OBJS_BNS) $(NAME)
-#		@touch $@
+bonus: make_libs $(OBJS_BNS) $(HEADER_B)
+	$(CC) $(FLAGS) -L$(LIBS) -L$(PRINTF) -lft -lftprintf -o $(NAME) $(OBJS_BNS)
 
 clean:
-	$(RM) $(OBJS)
-	$(RM) libft/libft.a
-	$(MAKE) -C libft/ clean  
+	$(RM) $(OBJS) $(OBJS_BNS) 
+	$(MAKE) -C ft_printf/ clean
+
 
 fclean: clean
 	$(RM) $(NAME)
+	$(MAKE) -C ft_printf/ fclean
 
 re: fclean all
 
-.PHONY: re clean fclean all
+.PHONY: re clean fclean all bonus
+
+
+

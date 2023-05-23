@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_calculate_padding_right_int.c                   :+:      :+:    :+:   */
+/*   ft_calculate_padding_right_int_bonus.c             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 22:33:36 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/04/02 00:46:40 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/22 23:38:02 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include "ft_printf.h"
-#include "libft/libft.h"
+#include "../libft/libft.h"
 
 void	calculate_padd_first_(t_print *tab, char *a, int len, int *pad)
 {

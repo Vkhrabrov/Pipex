@@ -6,11 +6,11 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 21:04:15 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/05/13 01:19:35 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/22 23:59:16 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
+#include "../libft/libft.h"
 #include "ft_printf.h"
 
 t_print	*ft_initialize_tab(t_print *tab)
@@ -84,7 +84,7 @@ int	ft_printf(const char *format, ...)
 	return (ret);
 }
 
-int	main(void)
+/*int	main(void)
 {
 	int		i;
 	int		j;
@@ -98,4 +98,4 @@ int	main(void)
 	j = printf(" %c %c %c ", '0', 0, '1');
 	printf("The number of characters: %i\n", j);
 	return (0);
-}
+}*/

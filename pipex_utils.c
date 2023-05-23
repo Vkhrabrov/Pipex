@@ -6,13 +6,13 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 20:45:50 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/05/17 22:20:06 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/23 00:03:10 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	ft_initialize_tab(t_pipex *tab)
+void	initialize_tab(t_pipex *tab)
 {
 	tab->in_fd = -1;
 	tab->out_fd = -1;

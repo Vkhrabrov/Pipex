@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_itoa.c                                          :+:      :+:    :+:   */
+/*   ft_utoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42barcel>       +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 21:25:23 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/03/27 03:24:24 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/22 23:36:50 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include<stdlib.h>
-#include "libft/libft.h"
+#include "../libft/libft.h"
 
 static char	*ft_string(char *str, int i, unsigned int n)
 {

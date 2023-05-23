@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_calculate_padding_x.c                           :+:      :+:    :+:   */
+/*   ft_calculate_padding_x_bonus.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/27 00:50:59 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/03/30 19:41:59 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/22 23:37:59 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include "ft_printf.h"
-#include "libft/libft.h"
+#include "../libft/libft.h"
 
 int	calculate_padding_x(t_print *tab, char *a, int len)
 {
