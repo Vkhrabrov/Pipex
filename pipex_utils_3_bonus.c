@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 20:35:45 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/05/18 21:32:02 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/25 18:42:45 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void	check_path_part_2(t_pipex *tab, char *argv)
 	{
 		tab->paths = ft_split(DEFPATH, ':');
 		if (!tab->paths)
-			exit (error_msg(NULL, "bash", MKO, clean_exit(tab, 1)));
+			exit(error_msg(NULL, "bash", MKO, clean_exit(tab, 1)));
 	}
 	string_parsing_back_slashes(tab, argv);
 }

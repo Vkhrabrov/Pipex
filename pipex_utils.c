@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 20:45:50 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/05/23 00:03:10 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/25 18:40:12 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,34 +40,6 @@ char	find_first_delimiter(const char *str, const char *delimiters)
 		str++;
 	}
 	return ('\0');
-}
-
-int	parsing_here_doc(t_pipex *tab)
-{
-	char	*line;
-	int		pipe_fd[2];
-
-	tab->i = 0;
-	line = NULL;
-	if (pipe(pipe_fd) < 0)
-		exit (error_msg(NULL, "bash", ECP, clean_exit(tab, 1)));
-	line = get_next_line(0);
-	while (line != NULL)
-	{
-		if (ft_strncmp(line, tab->delimiter_heredoc, ft_strlen(line)) == 0)
-		{
-			free(line);
-			break ;
-		}
-		tab->i = 0;
-		while (line[tab->i++] != '\0')
-			ft_putchar_fd(line[tab->i], pipe_fd[tab->i]);
-		ft_putchar_fd('\n', pipe_fd[tab->i]);
-		free(line);
-	}
-	if (close(pipe_fd[tab->i]))
-		exit (error_msg(PPX, "open", CNC, clean_exit(tab, 1)));
-	return (pipe_fd[0]);
 }
 
 char	*removing_char(char *cmd, char delimiter)

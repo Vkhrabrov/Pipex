@@ -6,114 +6,80 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 20:32:47 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/05/24 01:01:53 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/25 18:52:05 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
-
-void child_process(t_pipex *tab, int *end, char **argv, char *envp[], int i)
+void	child_process(t_pipex *tab, int *end, char **argv, char *envp[])
 {
-    close(end[0]);  // Closing the read end as we won't read anything in child process.
-    if (dup2(tab->in_fd, STDIN_FILENO) < 0)   // Replace the standard input with the input file.
-        exit(EXIT_FAILURE);
-    if (dup2(end[1], STDOUT_FILENO) < 0)  // Replace the standard output with the write end of the pipe.
-        exit(EXIT_FAILURE);
-
-    close(tab->in_fd);  // No longer need this after dup2
-    close(end[1]);  // No longer need this after dup2
-
-    check_path(tab, argv[i], envp);
-
-    if (execve(tab->cmd, tab->cmd_args, envp) == -1)
-    {
-        perror("Execve error");
-        exit(EXIT_FAILURE);
-    }
+	close(end[0]);
+	if (dup2(tab->in_fd, STDIN_FILENO) < 0)
+		exit(clean_exit(tab, 1));
+	if (dup2(end[1], STDOUT_FILENO) < 0)
+		exit(clean_exit(tab, 1));
+	close(tab->in_fd);
+	close(end[1]);
+	check_path(tab, argv[tab->b], envp);
+	if (execve(tab->cmd, tab->cmd_args, envp) == -1)
+		exit(clean_exit(tab, 1));
 }
 
-/*int	parent_process(t_pipex *tab, int *end, char **argv, char *envp[])
+int	pipex_extension(t_pipex *tab, char **args, char **envp)
 {
-	if ((dup2(tab->out_fd, STDOUT_FILENO)) < 0)
-		exit (error_msg(BSH, "2", BFD, clean_exit(tab, 1)));
-	if ((dup2(end[0], STDIN_FILENO)) < 0)
-		return (-1);
-	close(end[1]);
-	close(tab->out_fd);
-	check_path(tab, argv[3], envp);
+	if (dup2(tab->in_fd, STDIN_FILENO) < 0)
+		exit(clean_exit(tab, -1));
+	if (dup2(tab->out_fd, STDOUT_FILENO) < 0)
+		exit(clean_exit(tab, 1));
+	check_path(tab, args[tab->b], envp);
 	if (execve(tab->cmd, tab->cmd_args, envp) == -1)
-	{
-		perror("Execve error");
-		exit(EXIT_FAILURE);
-	}
-	exit(EXIT_SUCCESS);
-}*/
+		exit(clean_exit(tab, 1));
+	return (0);
+}
 
-int pipex(t_pipex *tab, int argc, char **args, char **envp)
+int	pipex(t_pipex *tab, int argc, char **args, char **envp)
 {
-    int     end[2];
-    pid_t   pid;
-    int     i;
+	int		end[2];
+	pid_t	pid;
 
-    if (tab->heredoc == 1)
-        i = 3;
-    else
-        i = 2;
-
-    while (i < argc - 2)
-    {
-        if (pipe(end) < 0)  // Create a pipe.
-            exit(EXIT_FAILURE);
-
-        pid = fork();
-        if (pid < 0)
-            exit(EXIT_FAILURE);
-        else if (pid == 0)  // In child process, execute the command and write to the pipe.
-            child_process(tab, end, args, envp, i);
-
-        close(tab->in_fd);  // Close the previous in_fd
-        tab->in_fd = end[0];  // Update the in_fd to the read end of the pipe.
-        close(end[1]);  // Close the write end of the pipe.
-
-        /*wait(NULL);  // Wait for the child process to finish.*/
-
-        i++;
-    }
-
-    // For the last command, replace the standard input with the read end of the last pipe and the standard output with the output file.
-    if (dup2(tab->in_fd, STDIN_FILENO) < 0)
-        return (-1);
-    if (dup2(tab->out_fd, STDOUT_FILENO) < 0)
-        exit(EXIT_FAILURE);
-
-    check_path(tab, args[i], envp);
-
-    if (execve(tab->cmd, tab->cmd_args, envp) == -1)
-    {
-        perror("Execve error");
-        exit(EXIT_FAILURE);
-    }
-
-    return (0);
+	if (tab->heredoc == 1)
+		tab->b = 3;
+	else
+		tab->b = 2;
+	while (tab->b < argc - 2)
+	{
+		if (pipe(end) < 0)
+			exit(clean_exit(tab, 1));
+		pid = fork();
+		if (pid < 0)
+			exit(clean_exit(tab, 1));
+		else if (pid == 0)
+			child_process(tab, end, args, envp);
+		close(tab->in_fd);
+		tab->in_fd = end[0];
+		close(end[1]);
+		tab->b++;
+	}
+	pipex_extension(tab, args, envp);
+	return (0);
 }
 
 int	ft_check_args(int argc, char **argv, t_pipex *tab)
 {
 	if (argc < 5)
 		exit (error_msg(NULL, "bash", INA, 1));
-	if (ft_strncmp(argv[1], "here_doc", ft_strlen("here_doc")) == 0
-		|| ft_strncmp(argv[1], "<<", ft_strlen("<<")) == 0)
-    {
-        tab->delimiter_heredoc = ft_strdup(argv[2]);
-        if (tab->delimiter_heredoc[0] != '\0')
-            tab->delimiter_heredoc = ft_strjoin(tab->delimiter_heredoc, "\n");
-        if (tab->delimiter_heredoc)
-        {
-            tab->heredoc = 1;
-		    tab->in_fd = parsing_here_doc(tab);
-        }
-    }
+	if (ft_strncmp(argv[1], "here_doc", ft_strlen("here_doc")) == 0)
+	{
+		tab->d_hd = ft_strdup(argv[2]);
+		if (tab->d_hd[0] != '\0')
+			tab->d_hd = ft_strjoin(tab->d_hd, "\n");
+		if (tab->d_hd)
+		{
+			tab->heredoc = 1;
+			tab->in_fd = parsing_here_doc(tab);
+		}
+	}
 	else
 		tab->in_fd = open(argv[1], O_RDONLY);
 	if (tab->in_fd < 0)
@@ -130,7 +96,7 @@ int	main(int argc, char **argv, char *envp[])
 
 	tab = (t_pipex *)malloc(sizeof(t_pipex));
 	if (!tab)
-		exit (EXIT_FAILURE);
+		exit(clean_exit(tab, 1));
 	initialize_tab(tab);
 	ft_check_args(argc, argv, tab);
 	pipex(tab, argc, argv, envp);

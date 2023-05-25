@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 21:33:43 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/05/23 00:01:23 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/25 01:30:00 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define PIPEX_H
 
 # include "libft/libft.h"
-# include "ft_printf/ft_printf.h"
 
 /* to write, read, close, access, pipe, dup, dup2, execve, fork */
 # include <unistd.h>

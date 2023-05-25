@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 20:34:07 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/05/24 01:31:55 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/25 18:57:37 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	initialize_tab(t_pipex *tab)
 	tab->invalid_infile = 0;
 	tab->i = 0;
 	tab->b = 0;
-	tab->delimiter_heredoc = NULL;
+	tab->d_hd = NULL;
 	tab->delimiter = 0;
 	tab->path_from_envp = NULL;
 	tab->paths = NULL;
@@ -31,6 +31,10 @@ void	initialize_tab(t_pipex *tab)
 	tab->cmd_count = 0;
 	tab->argc_tab = 0;
 	tab->heredoc = 0;
+	tab->line = NULL;
+	tab->num_lines = 0;
+	tab->lines = NULL;
+	tab->temp = NULL;
 }
 
 char	find_first_delimiter(const char *str, const char *delimiters)
@@ -44,43 +48,60 @@ char	find_first_delimiter(const char *str, const char *delimiters)
 	return ('\0');
 }
 
+void	creating_lines_heredoc(t_pipex *tab)
+{
+	tab->lines = malloc(sizeof(char *));
+	if (!tab->lines)
+		exit (clean_exit(tab, 1));
+	ft_putstr_fd("pipex here_doc> ", 1);
+	tab->line = get_next_line(0);
+	if (tab->line[0] == '\n')
+		tab->line[0] = '\0';
+	while (tab->line)
+	{
+		if (ft_strncmp(tab->line, tab->d_hd, ft_strlen(tab->d_hd)) == 0
+			&& ft_strlen(tab->line) == ft_strlen(tab->d_hd))
+		{
+			free(tab->line);
+			break ;
+		}
+		tab->lines[tab->num_lines] = tab->line;
+		tab->num_lines++;
+		tab->temp = malloc(sizeof(char *) * (tab->num_lines + 1));
+		if (!tab->temp)
+			exit (clean_exit(tab, 1));
+		memcpy(tab->temp, tab->lines, sizeof(char *) * tab->num_lines);
+		free(tab->lines);
+		tab->lines = tab->temp;
+		tab->line = get_next_line(0);
+	}
+}
+
 int	parsing_here_doc(t_pipex *tab)
 {
-	char	*line;
 	int		pipe_fd[2];
 
 	tab->i = 0;
-	line = NULL;
 	if (pipe(pipe_fd) < 0)
 		exit (error_msg(NULL, "bash", ECP, clean_exit(tab, 1)));
-	ft_putstr_fd("pipex here_doc> ", 1);
-	line = get_next_line(0);
-	if (line[0] == '\n')
-		line[0] = '\0';
-	if (!line)
-		exit(clean_exit(tab, 0));
-	while (line != NULL)
+	creating_lines_heredoc(tab);
+	if (tab->num_lines > 0 && tab->lines[tab->num_lines - 1][0] == '\n')
+		tab->lines[tab->num_lines - 1][0] = '\0';
+	while (tab->b < tab->num_lines)
 	{
-		if (ft_strncmp(line, tab->delimiter_heredoc, ft_strlen(tab->delimiter_heredoc)) == 0 
-			&& ft_strlen(line) == ft_strlen(tab->delimiter_heredoc))
-		{
-			free(line);
-			break ;
-		}
 		tab->i = 0;
-		while (line[tab->i] != '\0')
+		while (tab->lines[tab->b][tab->i] != '\0')
 		{
-			ft_putchar_fd(line[tab->i], pipe_fd[1]);
+			ft_putchar_fd(tab->lines[tab->b][tab->i], pipe_fd[1]);
 			tab->i++;
 		}
-		free(line);
-		line = get_next_line(0);
+		free(tab->lines[tab->b]);
+		tab->b++;
 	}
+	free(tab->lines);
 	close(pipe_fd[1]);
 	return (pipe_fd[0]);
 }
-
-
 
 char	*removing_char(char *cmd, char delimiter)
 {

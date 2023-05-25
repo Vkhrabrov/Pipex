@@ -6,15 +6,14 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/18 21:29:59 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/05/24 00:23:55 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/05/25 18:48:41 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_B_H
-# define PIPEX_B_H
+#ifndef PIPEX_BONUS_H
+# define PIPEX_BONUS_H
 
 # include "libft/libft.h"
-# include "ft_printf/ft_printf.h"
 
 /* to write, read, close, access, pipe, dup, dup2, execve, fork */
 # include <unistd.h>
@@ -48,7 +47,7 @@ typedef struct s_pipex
 	int		i;
 	int		b;
 	char	delimiter;
-	char	*delimiter_heredoc;
+	char	*d_hd;
 	char	*path_from_envp;
 	char	**paths;
 	char	*cmd_paths;
@@ -58,6 +57,10 @@ typedef struct s_pipex
 	int		cmd_count;
 	int		argc_tab;
 	int		heredoc;
+	char	*line;
+	char	**lines;
+	int		num_lines;
+	char	**temp;
 }	t_pipex;
 
 void	initialize_tab(t_pipex *tab);

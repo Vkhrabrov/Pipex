@@ -6,7 +6,7 @@
 #    By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/04 21:21:32 by vkhrabro          #+#    #+#              #
-#    Updated: 2023/05/23 22:51:59 by vkhrabro         ###   ########.fr        #
+#    Updated: 2023/05/25 00:04:24 by vkhrabro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,6 @@ NAME = pipex
 HEADER = pipex.h
 HEADER_B = pipex_bonus.h
 LIBS = libft/
-PRINTF = ft_printf/
 
 SRC_F:= pipex pipex_utils pipex_utils_2 pipex_utils_3 get_next_line/get_next_line  get_next_line/get_next_line_utils
 
@@ -35,26 +34,26 @@ CC = gcc
 all: 	make_libs $(NAME)
 
 make_libs:
-	$(MAKE) -C ft_printf/
+	$(MAKE) -C $(LIBS)
 
 $(NAME): $(OBJS) $(HEADER)
-	$(CC) $(FLAGS) -L$(LIBS) -L$(PRINTF) -lft -lftprintf -o $@ $(OBJS)
+	$(CC) $(FLAGS) -L$(LIBS) -lft -o $@ $(OBJS)
 
 bonus: make_libs $(OBJS_BNS) $(HEADER_B)
-	$(CC) $(FLAGS) -L$(LIBS) -L$(PRINTF) -lft -lftprintf -o $(NAME) $(OBJS_BNS)
+	$(CC) $(FLAGS) -L$(LIBS) -lft -o $(NAME) $(OBJS_BNS)
 
 clean:
 	$(RM) $(OBJS) $(OBJS_BNS) 
-	$(MAKE) -C ft_printf/ clean
-
+	$(MAKE) -C $(LIBS) clean
 
 fclean: clean
 	$(RM) $(NAME)
-	$(MAKE) -C ft_printf/ fclean
+	$(MAKE) -C $(LIBS) fclean
 
 re: fclean all
 
 .PHONY: re clean fclean all bonus
+
 
 
 
